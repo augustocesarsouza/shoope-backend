@@ -26,11 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shoope.Domain\Shoope.Domain.csproj" />
+    <Folder Include="UtilityExternal\Interface\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="UtilityExternal\Interface\" />
+    <ProjectReference Include="..\Shoope.Domain\Shoope.Domain.csproj" />
   </ItemGroup>
 
 </Project>

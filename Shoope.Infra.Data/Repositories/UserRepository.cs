@@ -24,6 +24,16 @@ namespace Shoope.Infra.Data.Repositories
             return user;
         }
 
+        public async Task<User?> GetUserByPhoneInfoUpdate(string phone)
+        {
+            var user = await _context
+                .Users
+                .Where(u => u.Phone == phone)
+                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
         public async Task<User?> GetUserByIdInfoUser(Guid id)
         {
             var user = await _context
@@ -73,7 +83,7 @@ namespace Shoope.Infra.Data.Repositories
             var user = await _context
                 .Users
                 .Where(u => u.Phone == phone)
-                .Select(x => new User(x.Id, x.Name, x.Email, null, null, x.PasswordHash, x.Salt, null, null, null))
+                .Select(x => new User(x.Id, x.Name, x.Email, null, x.Phone, x.PasswordHash, x.Salt, null, null, null))
                 .FirstOrDefaultAsync();
 
             return user;

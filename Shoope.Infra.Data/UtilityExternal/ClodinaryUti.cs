@@ -12,14 +12,15 @@ namespace Shoope.Infra.Data.UtilityExternal
             CloudinaryConfig.ApiKey,
             CloudinaryConfig.ApiSecret);
 
-        public async Task<CloudinaryCreate> CreateImg(string url, int width, int height)
+        public async Task<CloudinaryCreate> CreateImg(string url, string folder, int width, int height)
         {
             var cloudinary = new Cloudinary(_account);
 
             var uploadParams = new ImageUploadParams()
             {
                 File = new FileDescription(url),
-                Transformation = new Transformation().Width(width).Height(height).Crop("fill").Quality(100)
+                Transformation = new Transformation().Width(width).Height(height).Crop("fill").Quality(100),
+                Folder = folder
             };
 
             var uploadResult = await cloudinary.UploadAsync(uploadParams);

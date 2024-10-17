@@ -46,6 +46,11 @@ namespace Shoope.Infra.Data.Maps
             builder.Property(e => e.UserId)
                .HasColumnName("user_id");
 
+            builder.Property(e => e.DefaultAddress)
+                .IsRequired(true)
+                .HasColumnType("smallint")
+                .HasColumnName("default_address");
+
             builder.HasOne(x => x.User);
         }
     }

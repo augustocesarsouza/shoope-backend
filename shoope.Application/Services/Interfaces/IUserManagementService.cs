@@ -6,7 +6,7 @@ namespace Shoope.Application.Services.Interfaces
     {
         public Task<ResultService<UserDTO>> CheckEmailAlreadyExists(string phone);
         public Task<ResultService<UserDTO>> Create(UserDTO? userDTO);
-        public Task<ResultService<UserDTO>> UpdateUserAll(UserUpdateAllDTO userUpdateAllDTO);
-        public Task<ResultService<UserDTO>> UpdateUser(UserUpdateFillDTO userUpdateFillDTO);
+        public Task<ResultService<UserDTO>> UpdateUserAll(UserUpdateAllDTO? userUpdateAllDTO);
+        public Task<ResultService<UserDTO>> UpdateUser(UserUpdateFillDTO? userUpdateFillDTO);
     }
 }

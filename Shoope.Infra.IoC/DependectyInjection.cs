@@ -16,6 +16,10 @@ using Shoope.Infra.Data.UtilityExternal;
 using Ingresso.Infra.Data.UtilityExternal;
 using sib_api_v3_sdk.Api;
 using Shoope.Application.DTOs.Validations.AddressValidator;
+using Shoope.Domain.Authentication;
+using Shoope.Infra.Data.Authentication;
+using Shoope.Application.DTOs.Validations.Promotion;
+using Shoope.Application.DTOs.Validations.CuponValidator;
 
 namespace Shoope.Infra.IoC
 {
@@ -34,6 +38,12 @@ namespace Shoope.Infra.IoC
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAddressRepository, AddressRepository>();
 
+            services.AddScoped<IPromotionRepository, PromotionRepository>();
+            services.AddScoped<IPromotionUserRepository, PromotionUserRepository>();
+
+            services.AddScoped<ICuponRepository, CuponRepository>();
+            services.AddScoped<IUserCuponRepository, UserCuponRepository>();
+
             return services;
         }
 
@@ -42,6 +52,13 @@ namespace Shoope.Infra.IoC
             services.AddAutoMapper(typeof(DomainToDtoMapping));
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IAddressService, AddressService>();
+
+            services.AddScoped<IPromotionService, PromotionService>();
+            services.AddScoped<IPromotionUserService, PromotionUserService>();
+
+            services.AddScoped<ICuponService, CuponService>();
+            services.AddScoped<IUserCuponService, UserCuponService>();
+
             services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
             services.AddScoped<ITransactionalEmailsApi, TransactionalEmailsApi>();
             services.AddScoped<IUserCreateAccountFunction, UserCreateAccountFunction>();
@@ -49,10 +66,18 @@ namespace Shoope.Infra.IoC
             services.AddScoped<ISendEmailBrevo, SendEmailBrevo>();
             services.AddScoped<ICacheRedisUti, CacheRedisUti>();
             services.AddScoped<ITransactionalEmailApiUti, TransactionalEmailApiUti>();
+            services.AddScoped<ITokenGeneratorUser, TokenGeneratorUser>();
             services.AddScoped<IUserCreateDTOValidator, UserCreateDTOValidator>();
             services.AddScoped<IUserSendCodeEmailDTOValidator, UserSendCodeEmailDTOValidator>();
+            services.AddScoped<IPromotionUserCreateDTOValidator, PromotionUserCreateDTOValidator>();
+            services.AddScoped<IAddressUpdateDTOValidator, AddressUpdateDTOValidator>();
+            services.AddScoped<IAddressUpdateOnlyDefaultDTOValidator, AddressUpdateOnlyDefaultDTOValidator>();
             services.AddScoped<IAddressCreateDTOValidator, AddressCreateDTOValidator>();
-
+            services.AddScoped<IPromotionCreateDTOValidator, PromotionCreateDTOValidator>();
+            services.AddScoped<ICuponCreateDTOValidator, CuponCreateDTOValidator>();
+            services.AddScoped<IPromotionCreateDTOIfPromotionNumber2Validator, PromotionCreateDTOIfPromotionNumber2Validator>();
+            services.AddScoped<ICloudinaryUti, ClodinaryUti>();
+            
             return services; 
         }
     }

@@ -28,19 +28,25 @@ namespace Shoope.Application.Services
 
         public async Task<ResultService<UserDTO>> CheckEmailAlreadyExists(string phone)
         {
-            var user = await _userRepository.GetUserByPhone(phone);
+            try
+            {
+                var user = await _userRepository.GetUserByPhone(phone);
 
-            return ResultService.Ok(_mapper.Map<UserDTO>(user));
+                return ResultService.Ok(_mapper.Map<UserDTO>(user));
+            }
+            catch (Exception ex)
+            {
+                return ResultService.Fail<UserDTO>(ex.Message);
+            }
         }
 
         public async Task<ResultService<UserDTO>> Create(UserDTO? userDTO)
         {
             if (userDTO == null)
-                return ResultService.Fail<UserDTO>("user informed is null");
+                return ResultService.Fail<UserDTO>("userDTO is null");
 
-            if(userDTO.Password == null)
+            if (userDTO.Password == null)
                 return ResultService.Fail<UserDTO>("Password informed is null");
-
 
             var validationUser = _userCreateDTOValidator.ValidateDTO(userDTO);
 
@@ -67,7 +73,7 @@ namespace Shoope.Application.Services
 
                 var data = await _userRepository.CreateAsync(userCreate);
 
-                if(data == null)
+                if (data == null)
                     return ResultService.Fail<UserDTO>("error when create user null value");
 
                 var userReturnToFrontend = new UserDTO();
@@ -78,7 +84,7 @@ namespace Shoope.Application.Services
 
                 return ResultService.Ok(_mapper.Map<UserDTO>(userReturnToFrontend));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _unitOfWork.Rollback();
                 return ResultService.Fail<UserDTO>(ex.Message);
@@ -97,17 +103,20 @@ namespace Shoope.Application.Services
             return prefix + randomString;
         }
 
-        public async Task<ResultService<UserDTO>> UpdateUserAll(UserUpdateAllDTO userUpdateAllDTO)
+        public async Task<ResultService<UserDTO>> UpdateUserAll(UserUpdateAllDTO? userUpdateAllDTO)
         {
             try
             {
-                if(userUpdateAllDTO.UserId == null)
-                    return ResultService.Fail<UserDTO>("Erro UserId it is null");
+                if(userUpdateAllDTO == null)
+                    return ResultService.Fail<UserDTO>("Error DTO it is null");
+
+                if (userUpdateAllDTO.UserId == null)
+                    return ResultService.Fail<UserDTO>("Error UserId it is null");
 
                 var userToUpdate = await _userRepository.GetUserById(Guid.Parse(userUpdateAllDTO.UserId));
 
                 if (userToUpdate == null)
-                    return ResultService.Fail<UserDTO>("Erro user Not Found");
+                    return ResultService.Fail<UserDTO>("Error user Not Found");
                 //User(string ? name, string ? email, string ? gender, string ? phone)
 
                 userToUpdate.SetValueUpdateUser(userUpdateAllDTO.Name, userUpdateAllDTO.Email, userUpdateAllDTO.Gender, userUpdateAllDTO.Phone);
@@ -115,7 +124,7 @@ namespace Shoope.Application.Services
                 var userUpdate = await _userRepository.UpdateUser(userToUpdate);
 
                 if (userUpdate == null)
-                    return ResultService.Fail<UserDTO>("Erro userUpdate it is null");
+                    return ResultService.Fail<UserDTO>("Error userUpdate it is null");
 
                 return ResultService.Ok(new UserDTO(userUpdate.Id, userUpdate.Name, userUpdate.Email, userUpdate.Gender, userUpdate.Phone, null, null, null, userUpdate.Cpf, userUpdate.BirthDate, null));
             }
@@ -125,26 +134,29 @@ namespace Shoope.Application.Services
             }
         }
 
-        public async Task<ResultService<UserDTO>> UpdateUser(UserUpdateFillDTO userUpdateFillDTO)
+        public async Task<ResultService<UserDTO>> UpdateUser(UserUpdateFillDTO? userUpdateFillDTO)
         {
-            if(userUpdateFillDTO.Cpf == null)
+            if (userUpdateFillDTO == null)
+                return ResultService.Fail<UserDTO>("Error DTO it is null");
+
+            if (userUpdateFillDTO.Cpf == null)
                 return ResultService.Fail<UserDTO>("Error Cpf null");
 
             if (userUpdateFillDTO.UserId == null)
                 return ResultService.Fail<UserDTO>("Error UserId null");
 
-            if(userUpdateFillDTO.BirthDate == null)
+            if (userUpdateFillDTO.BirthDate == null)
                 return ResultService.Fail<UserDTO>("Error BirthDate null");
 
             try
             {
-                if(userUpdateFillDTO.Cpf.Length > 11 || userUpdateFillDTO.Cpf.Length < 11)
+                if (userUpdateFillDTO.Cpf.Length > 11 || userUpdateFillDTO.Cpf.Length < 11)
                     return ResultService.Fail<UserDTO>("Is not a Cpf Valid");
 
                 var userToUpdate = await _userRepository.GetUserById(Guid.Parse(userUpdateFillDTO.UserId));
 
-                if(userToUpdate == null)
-                    return ResultService.Fail<UserDTO>("Erro user Not Found");
+                if (userToUpdate == null)
+                    return ResultService.Fail<UserDTO>("Error user Not Found");
 
                 var stringCortada = userUpdateFillDTO.BirthDate.Split('/');
                 var dia = stringCortada[0];
@@ -157,7 +169,6 @@ namespace Shoope.Application.Services
                 userToUpdate.SetBirthdate(birthDateUtc);
                 userToUpdate.SetCpf(userUpdateFillDTO.Cpf);
 
-
                 // Suponha que `birthDateUtc` é a data recuperada do banco em UTC
                 //DateTime birthDateUtc = userFromDb.BirthDate.Value;
 
@@ -169,12 +180,12 @@ namespace Shoope.Application.Services
 
                 var userUpdate = await _userRepository.UpdateUser(userToUpdate);
 
-                if(userUpdate == null)
-                    return ResultService.Fail<UserDTO>("Erro userUpdate it is null");
+                if (userUpdate == null)
+                    return ResultService.Fail<UserDTO>("Error userUpdate it is null");
 
                 return ResultService.Ok(new UserDTO(null, userUpdate.Name, userUpdate.Email, null, null, null, null, null, userUpdate.Cpf, userUpdate.BirthDate, null));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return ResultService.Fail<UserDTO>(ex.Message);
             }

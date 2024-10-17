@@ -10,6 +10,10 @@ namespace Shoope.Application.Mappings
         {
             CreateMap<UserDTO, User>();
             CreateMap<AddressDTO, Address>();
+            CreateMap<PromotionDTO, Promotion>();
+            CreateMap<PromotionUserDTO, PromotionUser>();
+            CreateMap<CuponDTO, Cupon>();
+            CreateMap<UserCuponDTO, UserCupon>();
         }
     }
 }

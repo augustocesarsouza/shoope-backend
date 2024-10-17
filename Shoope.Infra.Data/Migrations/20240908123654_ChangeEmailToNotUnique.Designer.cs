@@ -3,15 +3,13 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shoope.Infra.Data.Context;
 
 #nullable disable
 
 namespace Shoope.Infra.Data.Migrations
 {
-    //[DbContext(typeof(DependectyInjection))]
+    [DbContext(typeof(ApplicationDbContext))]
     [Migration("20240908123654_ChangeEmailToNotUnique")]
     partial class ChangeEmailToNotUnique
     {

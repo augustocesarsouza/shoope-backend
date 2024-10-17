@@ -36,6 +36,13 @@
             Email = email;
         }
 
+        public UserDTO(string? name, string? email, string? password)
+        {
+            Name = name;
+            Email = email;
+            Password = password;
+        }
+
         public UserDTO()
         {
         }
@@ -53,6 +60,16 @@
         public void SetId(Guid id)
         {
             Id = id;
+        }
+
+        public void SetPhone(string? phone)
+        {
+            Phone = phone;
+        }
+
+        public void SetToken(string? token)
+        {
+            Token = token;
         }
 
         public Guid? GetId()

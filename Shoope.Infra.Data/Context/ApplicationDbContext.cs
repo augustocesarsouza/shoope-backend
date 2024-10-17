@@ -12,6 +12,10 @@ namespace Shoope.Infra.Data.Context
 
         public DbSet<User> Users { get; private set; }
         public DbSet<Address> Addresses { get; private set; }
+        public DbSet<Promotion> Promotion { get; private set; }
+        public DbSet<PromotionUser> PromotionUser { get; private set; }
+        public DbSet<Cupon> Cupons { get; private set; }
+        public DbSet<UserCupon> UserCupons { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

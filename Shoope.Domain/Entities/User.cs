@@ -43,6 +43,11 @@ namespace Shoope.Domain.Entities
             Phone = phone;
         }
 
+        public User(string? passwordHash)
+        {
+            PasswordHash = passwordHash;
+        }
+
         public void SetValueUpdateUser(string? name, string? email, string? gender, string? phone)
         {
             Name = name;
@@ -80,6 +85,21 @@ namespace Shoope.Domain.Entities
         public void SetGender(string gender)
         {
             Gender = gender;
+        }
+
+        public void SetPasswordHash(string passwordHash)
+        {
+            PasswordHash = passwordHash;
+        }
+
+        public void SetSalt(string salt)
+        {
+            Salt = salt;
+        }
+
+        public void SetGuidId(Guid userId)
+        {
+            Id = userId;
         }
 
         public string GetPasswordHash()

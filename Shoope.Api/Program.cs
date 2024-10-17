@@ -1,7 +1,10 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Shoope.Infra.Data.UtilityExternal;
+using Shoope.Api.Authentication;
+using Shoope.Api.Controllers;
+using Shoope.Api.ControllersInterface;
+using Shoope.Domain.Authentication;
 using Shoope.Infra.IoC;
 using System.Reflection;
 using System.Text;
@@ -12,10 +15,18 @@ ValidatorOptions.Global.LanguageManager.Culture = new System.Globalization.Cultu
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IBaseController, BaseController>();
+
+
 if (builder.Environment.IsDevelopment())
 { // Usar isso para os secrets, ir certo para cada "Pasta" "Shoope" Folder
-  //builder.Configuration.AddUserSecrets(typeof(DependectyInjection).Assembly);
-  //builder.Configuration.AddUserSecrets(typeof(SendEmailBrevo).Assembly);
+  builder.Configuration.AddUserSecrets(typeof(DependectyInjection).Assembly);
+    //builder.Configuration.AddUserSecrets(typeof(SendEmailBrevo).Assembly);
 
     var targetDirectories = new List<string>
     {
@@ -42,11 +53,6 @@ if (builder.Environment.IsDevelopment())
     }
 }
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
-builder.Services.AddControllers();
-builder.Services.AddHttpContextAccessor();
-
 builder.Services.AddMvc().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -63,7 +69,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-var keyJwtBearerSecret = builder.Configuration["key-jwt-bearer-secret"];
+var keyJwtBearerSecret = builder.Configuration["KeyJWT"];
 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyJwtBearerSecret));
 
 builder.Services.AddAuthentication(opt =>
@@ -98,7 +104,6 @@ var app = builder.Build();
 app.UseRouting();
 app.UseCors("CorsPolity");
 
-app.MapControllers();
 app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
@@ -110,6 +115,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers(); // Isso tem que está aqui se não o "httpContext.HttpContext.User.Claims" nao consigo pegar os "Claims" do token quando mandar na requisição
 
 //app.UseEndpoints(endpoints =>
 //{

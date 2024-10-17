@@ -10,7 +10,7 @@ using Shoope.Infra.Data.Context;
 
 namespace Shoope.Infra.Data.Migrations
 {
-    //[DbContext(typeof(DependectyInjection))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -37,6 +37,10 @@ namespace Shoope.Infra.Data.Migrations
                     b.Property<string>("Complement")
                         .HasColumnType("text")
                         .HasColumnName("complement");
+
+                    b.Property<byte>("DefaultAddress")
+                        .HasColumnType("smallint")
+                        .HasColumnName("default_address");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -78,6 +82,160 @@ namespace Shoope.Infra.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("tb_address", (string)null);
+                });
+
+            modelBuilder.Entity("Shoope.Domain.Entities.Cupon", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("cupons_id");
+
+                    b.Property<DateTime?>("DateValidateCupon")
+                        .IsRequired()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_validate_cupon");
+
+                    b.Property<string>("FirstText")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("first_text");
+
+                    b.Property<int?>("QuantityCupons")
+                        .IsRequired()
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity_cupons");
+
+                    b.Property<string>("SecondImg")
+                        .HasColumnType("text")
+                        .HasColumnName("second_img");
+
+                    b.Property<string>("SecondImgAlt")
+                        .HasColumnType("text")
+                        .HasColumnName("second_img_alt");
+
+                    b.Property<string>("SecondText")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("second_text");
+
+                    b.Property<string>("ThirdText")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("third_text");
+
+                    b.Property<int?>("WhatCuponNumber")
+                        .IsRequired()
+                        .HasColumnType("integer")
+                        .HasColumnName("what_cupon_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cupons");
+
+                    b.ToTable("tb_cupons", (string)null);
+                });
+
+            modelBuilder.Entity("Shoope.Domain.Entities.Promotion", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("promotion_id");
+
+                    b.Property<string>("AltImgInnerFirst")
+                        .HasColumnType("text")
+                        .HasColumnName("alt_img_inner_first");
+
+                    b.Property<string>("AltImgInnerSecond")
+                        .HasColumnType("text")
+                        .HasColumnName("alt_img_inner_second");
+
+                    b.Property<string>("AltImgInnerThird")
+                        .HasColumnType("text")
+                        .HasColumnName("alt_img_inner_third");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Img")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("img");
+
+                    b.Property<string>("ImgInnerFirst")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_first");
+
+                    b.Property<string>("ImgInnerFirstPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_first_public_id");
+
+                    b.Property<string>("ImgInnerSecond")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_second");
+
+                    b.Property<string>("ImgInnerSecondPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_second_public_id");
+
+                    b.Property<string>("ImgInnerThird")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_third");
+
+                    b.Property<string>("ImgInnerThirdPublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("img_inner_third_public-id");
+
+                    b.Property<string>("PublicIdImg")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("public_id_img");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("title");
+
+                    b.Property<int>("WhatIsThePromotion")
+                        .HasColumnType("integer")
+                        .HasColumnName("what_is_the_promotion");
+
+                    b.HasKey("Id")
+                        .HasName("pk_promotion");
+
+                    b.ToTable("tb_promotion", (string)null);
+                });
+
+            modelBuilder.Entity("Shoope.Domain.Entities.PromotionUser", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("promotion_user_id");
+
+                    b.Property<Guid?>("PromotionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("promotion_id");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_promotion_user");
+
+                    b.HasIndex("PromotionId");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_promotion_user_user_id");
+
+                    b.ToTable("tb_promotion_user", (string)null);
                 });
 
             modelBuilder.Entity("Shoope.Domain.Entities.User", b =>
@@ -128,6 +286,32 @@ namespace Shoope.Infra.Data.Migrations
                     b.ToTable("tb_users", (string)null);
                 });
 
+            modelBuilder.Entity("Shoope.Domain.Entities.UserCupon", b =>
+                {
+                    b.Property<Guid?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_cupons_id");
+
+                    b.Property<Guid?>("CuponId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cupon_id");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_user_cupons");
+
+                    b.HasIndex("CuponId");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_user_cupons_user_id");
+
+                    b.ToTable("tb_user_cupons", (string)null);
+                });
+
             modelBuilder.Entity("Shoope.Domain.Entities.Address", b =>
                 {
                     b.HasOne("Shoope.Domain.Entities.User", "User")
@@ -135,6 +319,36 @@ namespace Shoope.Infra.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shoope.Domain.Entities.PromotionUser", b =>
+                {
+                    b.HasOne("Shoope.Domain.Entities.Promotion", "Promotion")
+                        .WithMany()
+                        .HasForeignKey("PromotionId");
+
+                    b.HasOne("Shoope.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Promotion");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Shoope.Domain.Entities.UserCupon", b =>
+                {
+                    b.HasOne("Shoope.Domain.Entities.Cupon", "Cupon")
+                        .WithMany()
+                        .HasForeignKey("CuponId");
+
+                    b.HasOne("Shoope.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Cupon");
 
                     b.Navigation("User");
                 });

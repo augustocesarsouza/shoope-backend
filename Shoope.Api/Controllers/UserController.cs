@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Shoope.Api.ControllersInterface;
 using Shoope.Application.DTOs;
 using Shoope.Application.Services.Interfaces;
+using Shoope.Domain.Authentication;
 
 namespace Shoope.Api.Controllers
 {
@@ -9,16 +12,27 @@ namespace Shoope.Api.Controllers
     {
         private readonly IUserManagementService _userManagementService;
         private readonly IUserAuthenticationService _userAuthenticationService;
+        private readonly IBaseController _baseController;
+        private readonly ICurrentUser _currentUser;
 
-        public UserController(IUserManagementService userManagementService, IUserAuthenticationService userAuthenticationService)
+        public UserController(IUserManagementService userManagementService, IUserAuthenticationService userAuthenticationService,
+            IBaseController baseController,
+            ICurrentUser currentUser)
         {
             _userManagementService = userManagementService;
             _userAuthenticationService = userAuthenticationService;
+            _baseController = baseController;
+            _currentUser = currentUser;
         }
 
-        [HttpGet("v1/public/user/get-user-by-id/{userId}")]
+        [Authorize]
+        [HttpGet("v1/user/get-user-by-id/{userId}")]
         public async Task<IActionResult> GetByIdInfoUser([FromRoute] string userId)
         {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
             var result = await _userAuthenticationService.GetByIdInfoUser(userId);
 
             if (result.IsSucess)
@@ -49,6 +63,38 @@ namespace Shoope.Api.Controllers
             return BadRequest(result);
         }
 
+        [Authorize]
+        [HttpGet("v1/user/verify-password/{phone}/{password}")]
+        public async Task<IActionResult> VerifyPasswordUser([FromRoute] string phone, [FromRoute] string password)
+        {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
+            var result = await _userAuthenticationService.VerifyPasswordUser(phone, password);
+
+            if (result.IsSucess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [Authorize]
+        [HttpPost("v1/user/change-password")]
+        public async Task<IActionResult> ChangePasswordUser([FromBody] UserChangePasswordDTO userChangePasswordDTO)
+        {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
+            var results = await _userAuthenticationService.ChangePasswordUser(userChangePasswordDTO);
+
+            if (results.IsSucess)
+                return Ok(results);
+
+            return BadRequest(results);
+        }
+
         [HttpPost("v1/public/user/verific")]
         public async Task<IActionResult> Verfic([FromBody] UserConfirmCodeEmailDTO userConfirmCodeEmailDTO)
         {
@@ -60,9 +106,14 @@ namespace Shoope.Api.Controllers
             return BadRequest(results);
         }
 
-        [HttpPost("v1/public/user/confirm-email-send-code")]
+        [Authorize]
+        [HttpPost("v1/user/confirm-email-send-code")]
         public async Task<IActionResult> ConfirmEmailSendCode([FromBody] UserDTO userDTO)
         {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
             var result = await _userAuthenticationService.SendCodeEmail(userDTO);
 
             if (result.IsSucess)
@@ -82,9 +133,14 @@ namespace Shoope.Api.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("v1/public/user/update-user")]
+        [Authorize]
+        [HttpPut("v1/user/update-user")]
         public async Task<IActionResult> UpdateAsync([FromBody] UserUpdateFillDTO userUpdateFillDTO)
         {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
             var result = await _userManagementService.UpdateUser(userUpdateFillDTO);
 
             if (result.IsSucess)
@@ -93,9 +149,14 @@ namespace Shoope.Api.Controllers
             return BadRequest(result);
         }
 
-        [HttpPut("v1/public/user/update-user-all")]
+        [Authorize]
+        [HttpPut("v1/user/update-user-all")]
         public async Task<IActionResult> UpdateAllAsync([FromBody] UserUpdateAllDTO userUpdateAllDTO)
         {
+            var userAuth = _baseController.Validator(_currentUser);
+            if (userAuth == null)
+                return _baseController.Forbidden();
+
             var result = await _userManagementService.UpdateUserAll(userUpdateAllDTO);
 
             if (result.IsSucess)
